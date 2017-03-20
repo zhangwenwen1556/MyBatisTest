@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<!-- 如果以后使用mapper代理的方式的话，这个namespace就具有特殊的作用 -->
+<mapper namespace="test">
+
+	<select id="findUserById" parameterType="int" resultType="cn.itcast.mybatis.po.User">
+		SELECT * FROM USER WHERE ID = #{id}
+	</select>
+	
+	<insert id="insertUser" parameterType="cn.itcast.mybatis.po.User">
+		<!-- 
+			自增主键的插入
+			这里的selectKey是用来查询最后一个插入的主键的ID
+			order：标示的是在insert语句执行之前还是之后执行这条查询语句，BEFORE是之前，AFTER是之后
+			resultType：标示的时候查询的结果的返回值类型
+		 -->
+		<selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO USER (USERNAME,BIRTHDAY,SEX,ADDRESS) VALUES (#{username},#{birthday},#{sex},#{address})
+		<!-- 
+			非自增主键的插入(uuid)
+			selectKey执行顺序应该是在整条插入sql之前，将查询到的id放入到实体中去，然后sql就可以去到ID了
+		 
+		 <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">
+		 	SELECT UUID()
+		 </selectKey>
+		 INSERT INTO USER (ID,USERNAME,BIRTHDAY,SEX,ADDRESS) VALUES (#{id},#{username},#{birthday},#{sex},#{address})
+		 -->
+	</insert>
+	
+	<update id="updateUser" parameterType="cn.itcast.mybatis.po.User">
+		UPDATE USER 
+		<set>
+			<if test="username != null and username != '' ">
+				USERNAME = #{username},
+			</if>
+			<if test="sex != null and sex != ''">
+				SEX = #{sex},
+			</if>			
+			<if test="address != null and address != ''">
+				ADDRESS = #{address},
+			</if>
+			<if test="birthday != null">
+				BIRTHDAY = #{birthday},
+			</if>
+		</set>
+		WHERE ID = #{id}
+	</update>
+	
+	<delete id="deleteUser" parameterType="int">
+		DELETE FROM USER WHERE ID = #{id}
+	</delete>
+	
+</mapper>

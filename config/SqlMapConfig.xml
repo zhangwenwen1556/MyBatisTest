@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!-- 加载属性文件 -->
+	<properties resource="db.properties">
+		<!-- 这里还可以在db.properties引用的时候新加属性，或者修改属性 -->
+		<!-- <property name="" value=""/> -->
+	</properties>
+	<!-- 全局的配置参数 -->
+	<!-- <settings></settings> -->
+
+	<typeAliases>
+		<!-- 单个导入 -->
+		<!-- <typeAlias type="cn.itcast.mybatis.po.User" alias="user"/> -->
+		<!-- 批量导入，一次导入一个包里面所有的实体 -->
+		<package name="cn.itcast.mybatis.po" />
+	</typeAliases>
+
+	<!-- 和spring整合以后整个environmerts将废除 -->
+	<environments default="development">
+		<environment id="development">
+			<!-- 使用JDBC事物管理，事物控制交给mybatis -->
+			<transactionManager type="JDBC" />
+			<!-- 使用数据库的连接池，也是由mybatis控制 -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${jdbc.mysql.Driver}" />
+				<property name="url" value="${jdbc.mysql.url}" />
+				<property name="username" value="${jdbc.mysql.username}" />
+				<property name="password" value="${jdbc.mysql.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper resource="sqlmap/User.xml" />
+		<!-- <mapper resource="mapper/UserMapper.xml" /> -->
+
+
+		<!-- 通过mapper接口加载映射文件 
+			遵循一些规范:需要将mapper接口类和mapper.xml映射文件名称保持一致，且在同意目录中， 
+			上边规范的前提是:使用mapper代理方法 -->
+		<!-- <mapper class="cn.itcast.mybatis.mapper.UserMapper" /> -->
+		
+		<!-- 批量加载mapper 
+			遵循一些规范:需要将mapper接口类和mapper.xml映射文件名称保持一致，且在同意目录中， 
+			上边规范的前提是:使用mapper代理方法
+		-->
+		<package name="cn.itcast.mybatis.mapper"/>
+		
+	</mappers>
+
+</configuration>
